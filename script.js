@@ -1,4 +1,4 @@
-/* ASMR detailing studio. Ванильный JS: плиты и проход ракеля, меню, якоря, язык, форма в WhatsApp. */
+/* ASMR detailing studio. Ванильный JS: плиты и самозатягивание царапин, меню, якоря, язык, счётчики, форма в WhatsApp. */
 (function () {
   "use strict";
   var doc = document, root = doc.documentElement, W = window;
@@ -27,7 +27,7 @@
     }
   };
   var FORM_LABELS = {
-    ru: { head: "Заявка с сайта ASMR detailing studio", name: "Имя", phone: "Телефон", car: "Машина и пакет" }
+    ru: { head: "Заявка с сайта ASMR detailing studio", name: "Имя", phone: "Телефон", car: "Машина", pkg: "Пакет", lux: "Люкс пакет", vkrug: "В круг", any: "Пока не выбрал" }
   };
   W.addEventListener("click", function (e) {
     var a = e.target && e.target.closest ? e.target.closest("a[data-wa]") : null;
@@ -75,9 +75,13 @@
 
   /* ---------- Якоря ---------- */
   var HDR = function () { return parseFloat(getComputedStyle(root).getPropertyValue("--hdr")) || 72; };
+  function flowPlate(pw) {
+    var plate = pw.firstElementChild;
+    return !plate || getComputedStyle(plate).position !== "sticky";
+  }
   function targetTop(el) {
     var r = el.getBoundingClientRect().top + W.pageYOffset;
-    if (el.classList.contains("pw")) return (MOBILE || el.classList.contains("flow")) ? r - HDR() : r;
+    if (el.classList.contains("pw")) return flowPlate(el) ? r - HDR() : r;
     if (el.classList.contains("sec")) return r - HDR();
     return r - HDR() - 14;
   }
@@ -103,29 +107,41 @@
     }
   });
 
-  /* ---------- Угол прохода ракеля: сдвиг низа кромки = 0.2 высоты кадра ---------- */
-  var phs = [].slice.call(doc.querySelectorAll(".ph"));
-  function sizePh() {
-    phs.forEach(function (ph) {
-      var h = ph.getBoundingClientRect().height || ph.offsetHeight;
-      if (h) ph.style.setProperty("--sh", (h * 0.2).toFixed(1) + "px");
-    });
-  }
+  /* ---------- Царапины: сетка коротких штрихов, каждый затягивается к своей середине ---------- */
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  function seeded(seed) { var s = seed % 2147483647; if (s <= 0) s += 2147483646; return function () { s = s * 16807 % 2147483647; return (s - 1) / 2147483646; }; }
+  var scrs = [].slice.call(doc.querySelectorAll(".scr"));
+  scrs.forEach(function (svg, idx) {
+    var rnd = seeded(97 + idx * 131);
+    var n = svg.closest(".ph-hero") ? 54 : 38;
+    var frag = doc.createDocumentFragment();
+    for (var i = 0; i < n; i++) {
+      var x = rnd() * 100, y = rnd() * 100;
+      var len = 3 + rnd() * 11;
+      var ang = (rnd() < 0.55 ? -38 : 32) + (rnd() - 0.5) * 50;
+      var rad = ang * Math.PI / 180;
+      var dx = Math.cos(rad) * len / 2, dy = Math.sin(rad) * len / 2;
+      var l = doc.createElementNS(SVG_NS, "line");
+      l.setAttribute("x1", (x - dx).toFixed(2)); l.setAttribute("y1", (y - dy).toFixed(2));
+      l.setAttribute("x2", (x + dx).toFixed(2)); l.setAttribute("y2", (y + dy).toFixed(2));
+      l.setAttribute("pathLength", "1");
+      /* задержка по диагонали: тёплое пятно идёт из левого верхнего угла */
+      var d = ((x + y) / 200) * 0.5 + rnd() * 0.12;
+      l.style.setProperty("--d", d.toFixed(3));
+      frag.appendChild(l);
+    }
+    svg.appendChild(frag);
+  });
 
-  /* ---------- Плиты: enter / stay / exit, проход ракеля --open ---------- */
+  /* ---------- Плиты: enter / stay / exit, самозатягивание --heal ---------- */
   var pws = [].slice.call(doc.querySelectorAll(".pw"));
   var sticky = doc.getElementById("sticky"), kont = doc.getElementById("kontakty");
   var hdr = doc.getElementById("hdr");
   var INTRO = (location.hash.length > 1 || W.pageYOffset > 80 || REDUCED) ? 1 : 0;
   var introStart = 0, ticking = false;
-  var st = pws.map(function () { return { open: -1, out: {} }; });
+  var st = pws.map(function () { return { heal: -1, out: {} }; });
   var lastTs = 0;
   function put(el, s, k, v) { if (s.out[k] !== v) { s.out[k] = v; el.style.setProperty(k, v); } }
-  function flowPlate(pw) {
-    /* плита в обычном потоке (мобайл, низкий экран): въезд считаем от нижнего края окна */
-    var plate = pw.firstElementChild;
-    return !plate || getComputedStyle(plate).position !== "sticky";
-  }
   function update(ts) {
     ticking = false;
     var now = typeof ts === "number" ? ts : performance.now();
@@ -151,22 +167,25 @@
       var stay = r.height > H ? clamp(-r.top / (r.height - H)) : 0;
       var exit = (nxtTops[i] !== null && !flow) ? clamp(1 - nxtTops[i] / H) : 0;
       var isHero = pw.classList.contains("pw-hero");
-      var open;
-      if (isHero) open = REDUCED ? 1 : smooth(INTRO);
-      else open = REDUCED ? 1 : (flow ? smooth((enter - 0.22) / 0.5) : smooth((enter - 0.3) / 0.6));
-      if (s.open < 0 || REDUCED || isHero) s.open = open;
+      var heal;
+      if (isHero) heal = REDUCED ? 1 : smooth(INTRO);
+      else heal = REDUCED ? 1 : (flow ? smooth((enter - 0.22) / 0.5) : smooth((enter - 0.28) / 0.6));
+      if (s.heal < 0 || REDUCED || isHero) s.heal = heal;
       else {
-        s.open += (open - s.open) * k;
-        if (Math.abs(open - s.open) > 0.002) moving = true; else s.open = open;
+        s.heal += (heal - s.heal) * k;
+        if (Math.abs(heal - s.heal) > 0.002) moving = true; else s.heal = heal;
       }
       put(pw, s, "--enter", enter.toFixed(4));
       put(pw, s, "--stay", (isHero ? easeOut(stay) : stay).toFixed(4));
       put(pw, s, "--exit", exit.toFixed(4));
-      put(pw, s, "--open", s.open.toFixed(4));
+      put(pw, s, "--heal", s.heal.toFixed(4));
       var plate = pw.firstElementChild;
       if (plate) plate.classList.toggle("gone", exit >= 1 && !flow);
+      if (!s.phs) s.phs = pw.querySelectorAll(".ph");
+      var healed = s.heal >= 0.999;
+      if (s.healed !== healed) { s.healed = healed; for (var p = 0; p < s.phs.length; p++) s.phs[p].classList.toggle("healed", healed); }
       if (!s.txts) s.txts = pw.querySelectorAll(".txt, .hero-txt");
-      var on = isHero ? INTRO > 0.15 : (flow ? enter > 0.25 : enter > 0.6);
+      var on = isHero ? INTRO > 0.12 : (flow ? enter > 0.25 : enter > 0.6);
       if (s.on !== on) { s.on = on; for (var t = 0; t < s.txts.length; t++) s.txts[t].classList.toggle("on", on); }
     }
     if (sticky) {
@@ -181,31 +200,50 @@
   W.addEventListener("scroll", onScroll, { passive: true });
   W.addEventListener("resize", function () {
     /* на телефоне смена только высоты - это адресная строка: раскладку не пересчитываем */
-    if (W.innerWidth !== VW) { VW = W.innerWidth; VH = W.innerHeight; MOBILE = W.matchMedia("(max-width:760px)").matches; sizePh(); fitAll(); }
-    else if (!TOUCH) { VH = W.innerHeight; sizePh(); }
+    if (W.innerWidth !== VW) { VW = W.innerWidth; VH = W.innerHeight; MOBILE = W.matchMedia("(max-width:760px)").matches; fitAll(); }
+    else if (!TOUCH) { VH = W.innerHeight; }
     onScroll();
   });
   function runIntro(ts) {
     if (!introStart) introStart = ts;
-    INTRO = clamp((ts - introStart) / 1400);
+    INTRO = clamp((ts - introStart) / 1700);
     update(ts);
     if (INTRO < 1) requestAnimationFrame(runIntro);
   }
 
-  /* ---------- Кадры каталожных секций: проход при появлении ---------- */
+  /* ---------- Кадры каталожных секций: затягивание при появлении ---------- */
   var secPh = [].slice.call(doc.querySelectorAll(".sec .ph"));
-  secPh.forEach(function (ph) { ph.style.setProperty("--open", REDUCED ? "1" : "0"); });
-  function openPh(ph) {
+  secPh.forEach(function (ph) { ph.style.setProperty("--heal", REDUCED ? "1" : "0"); if (REDUCED) ph.classList.add("healed"); });
+  function healPh(ph) {
     if (ph.getAttribute("data-done")) return;
     ph.setAttribute("data-done", "1");
     var t0 = 0;
     function step(ts) {
       if (!t0) t0 = ts;
-      var p = smooth((ts - t0) / 1400);
-      ph.style.setProperty("--open", p.toFixed(4));
-      if (p < 1) requestAnimationFrame(step);
+      var p = smooth((ts - t0) / 1500);
+      ph.style.setProperty("--heal", p.toFixed(4));
+      if (p < 1) requestAnimationFrame(step); else ph.classList.add("healed");
     }
     requestAnimationFrame(step);
+  }
+
+  /* ---------- Счётчики ---------- */
+  function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
+  function runCounters(scope) {
+    [].forEach.call(scope.querySelectorAll(".cnt[data-count]"), function (el) {
+      if (el.getAttribute("data-done")) return;
+      el.setAttribute("data-done", "1");
+      var target = parseFloat(el.getAttribute("data-count")) || 0;
+      if (REDUCED) { el.textContent = fmt(target); return; }
+      var t0 = 0;
+      function step(ts) {
+        if (!t0) t0 = ts;
+        var p = easeOut(clamp((ts - t0) / 1600));
+        el.textContent = fmt(target * p);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
   }
 
   /* ---------- Подгонка дисплейных заголовков: кегль вниз шагом 5%, пока не влезает ---------- */
@@ -224,7 +262,7 @@
     var conn = navigator.connection;
     if (conn && (conn.saveData || /2g/.test(conn.effectiveType || ""))) return;
     heroVideo.addEventListener("playing", function () { if (heroPh) heroPh.classList.add("is-live"); });
-    heroVideo.src = "assets/hero-loop.mp4?v=20261026-3";
+    heroVideo.src = "assets/hero.mp4" + (ASSET_V ? "?v=" + ASSET_V : "");
     var p = heroVideo.play();
     if (p && p.catch) p.catch(function () {});
   }
@@ -262,6 +300,7 @@
       var on = b.getAttribute("data-lang") === lang;
       b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    if (bandT && bandT.children.length) { var half = bandT.children.length / 2; while (bandT.children.length > half) bandT.removeChild(bandT.lastElementChild); bandT.innerHTML += bandT.innerHTML; }
     try { localStorage.setItem("asmr-lang", lang); } catch (e) {}
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(fitAll); else fitAll();
   }
@@ -294,18 +333,18 @@
 
   /* ---------- Проявление секций ---------- */
   var rv = [].slice.call(doc.querySelectorAll(".rv"));
+  function showRv(el) {
+    el.classList.add("in");
+    [].forEach.call(el.querySelectorAll(".ph"), healPh);
+    runCounters(el);
+  }
   if ("IntersectionObserver" in W && !REDUCED) {
     var io = new IntersectionObserver(function (es) {
-      es.forEach(function (x) {
-        if (!x.isIntersecting) return;
-        x.target.classList.add("in");
-        [].forEach.call(x.target.querySelectorAll(".ph"), openPh);
-        io.unobserve(x.target);
-      });
+      es.forEach(function (x) { if (!x.isIntersecting) return; showRv(x.target); io.unobserve(x.target); });
     }, { rootMargin: "0px 0px -6% 0px", threshold: 0.06 });
     rv.forEach(function (el) { io.observe(el); });
-    setTimeout(function () { rv.forEach(function (el) { if (!el.classList.contains("in") && el.getBoundingClientRect().top < W.innerHeight) { el.classList.add("in"); [].forEach.call(el.querySelectorAll(".ph"), openPh); } }); }, 1500);
-  } else { rv.forEach(function (el) { el.classList.add("in"); }); secPh.forEach(function (ph) { ph.style.setProperty("--open", "1"); }); }
+    setTimeout(function () { rv.forEach(function (el) { if (!el.classList.contains("in") && el.getBoundingClientRect().top < W.innerHeight) showRv(el); }); }, 1500);
+  } else { rv.forEach(function (el) { el.classList.add("in"); runCounters(el); }); secPh.forEach(function (ph) { ph.style.setProperty("--heal", "1"); ph.classList.add("healed"); }); }
 
   /* ---------- Форма -> WhatsApp ---------- */
   var form = doc.getElementById("form"), thanks = doc.getElementById("thanks"), ferr = doc.getElementById("ferr");
@@ -322,6 +361,8 @@
       if (ferr) ferr.hidden = true;
       var L = FORM_LABELS[LANG] || FORM_LABELS.ru;
       var lines = [L.head];
+      var pkg = (form.querySelector('input[name="pkg"]:checked') || {}).value || "any";
+      lines.push(L.pkg + ": " + (L[pkg] || L.any));
       if (name) lines.push(L.name + ": " + name);
       lines.push(L.phone + ": " + phone);
       var car = f.car.value.trim();
@@ -338,7 +379,7 @@
 
   /* ---------- Старт ---------- */
   function start() {
-    sizePh(); fitAll();
+    fitAll();
     if (location.hash.length > 1) {
       var id = location.hash.slice(1);
       goTo(id, true);
@@ -351,5 +392,5 @@
   }
   if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { fitAll(); update(); });
   if (doc.readyState === "complete") start(); else W.addEventListener("load", start);
-  sizePh(); update();
+  update();
 })();
