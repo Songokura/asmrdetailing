@@ -28,9 +28,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Rubik:wght@800&family=Golos+Text:wght@400;500;600&display=swap">
-<link rel="preload" as="image" href="assets/hero.webp" media="(min-width:761px)" fetchpriority="high">
-<link rel="preload" as="image" href="assets/hero-m.webp" media="(max-width:760px)" fetchpriority="high">
-<link rel="stylesheet" href="styles.css?v=20261026-2">
+<link rel="preload" as="image" href="assets/hero.webp?v=20261026-3" media="(min-width:761px)" fetchpriority="high">
+<link rel="preload" as="image" href="assets/hero-m.webp?v=20261026-3" media="(max-width:760px)" fetchpriority="high">
+<link rel="stylesheet" href="styles.css?v=20261026-3">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -64,19 +64,6 @@
   <symbol id="ic-mail" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" d="M3.5 6.5h17v11h-17z"/><path fill="none" stroke="currentColor" stroke-width="1.8" d="m4 7 8 6 8-6"/></symbol>
   <symbol id="ic-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
   <symbol id="ic-gift" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7c-1.5-3.5-5-3.5-5-1.5S10 7 12 7Zm0 0c1.5-3.5 5-3.5 5-1.5S14 7 12 7Z"/></symbol>
-  <!-- схема кузова: вид сбоку, зоны оклейки заливаются золотом -->
-  <symbol id="car-body" viewBox="0 0 1000 400">
-    <path d="M62 262c-8-30 0-62 30-76l70-18c42-10 90-14 140-18l56-44c30-24 60-32 110-32h140c50 0 90 10 130 36l40 30 100 14c40 6 72 20 84 50l8 36c2 12-4 22-16 24H62Z"/>
-  </symbol>
-  <symbol id="car-glass" viewBox="0 0 1000 400">
-    <path d="M330 150l48-38c26-20 54-28 96-28h40v70H330Zm190 4v-70h92c40 0 72 8 104 30l50 36H520Z"/>
-  </symbol>
-  <symbol id="car-lines" viewBox="0 0 1000 400">
-    <path d="M62 262h876M108 190l100-10M560 200h120M860 196l50 2M300 262c0-44 36-80 80-80s80 36 80 80M580 262c0-44 36-80 80-80s80 36 80 80"/>
-    <circle cx="380" cy="268" r="58"/><circle cx="380" cy="268" r="24"/>
-    <circle cx="660" cy="268" r="58"/><circle cx="660" cy="268" r="24"/>
-    <path d="M70 232h40M84 214l42-8M452 150l-6 14h-24l-14-14"/>
-  </symbol>
 </svg>
 
 <header class="hdr" id="hdr">
@@ -128,12 +115,12 @@
   <section class="plate hero" aria-label="Оклейка авто защитной плёнкой в Караганде">
     <div class="ph ph-hero">
       <picture class="wet">
-        <source media="(max-width:760px)" srcset="assets/hero-m.webp">
-        <img src="assets/hero.webp" alt="" width="1280" height="1173" fetchpriority="high" decoding="async">
+        <source media="(max-width:760px)" srcset="assets/hero-m.webp?v=20261026-3">
+        <img src="assets/hero.webp?v=20261026-3" alt="" width="1280" height="720" fetchpriority="high" decoding="async">
       </picture>
       <picture class="dry">
-        <source media="(max-width:760px)" srcset="assets/hero-m.webp">
-        <img src="assets/hero.webp" alt="Чёрный кузов автомобиля под лампами детейлинг-студии в Караганде" data-i-alt="hero.alt" width="1280" height="1173" fetchpriority="high" decoding="async">
+        <source media="(max-width:760px)" srcset="assets/hero-m.webp?v=20261026-3">
+        <img src="assets/hero.webp?v=20261026-3" alt="Чёрный кузов автомобиля под лампами детейлинг-студии в Караганде" data-i-alt="hero.alt" width="1280" height="720" fetchpriority="high" decoding="async">
       </picture>
       <video class="hero-video" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"></video>
       <div class="sq" aria-hidden="true"></div>
@@ -181,17 +168,12 @@
         </div>
         <a class="btn btn-gold" href="https://wa.me/77470550465" data-wa="lux" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg><span data-i="lux.cta">Цена на мою машину</span></a>
       </div>
-      <div class="media scheme-wrap" data-zone="front">
-        <div class="ph ph-scheme" aria-hidden="true">
-          <div class="scheme base">
-            <svg viewBox="0 0 1000 400"><use href="#car-body" class="body"/><use href="#car-glass" class="glass"/><use href="#car-lines" class="lines"/></svg>
-          </div>
-          <div class="scheme dry">
-            <svg viewBox="0 0 1000 400"><use href="#car-body" class="body gold"/><use href="#car-glass" class="glass"/><use href="#car-lines" class="lines dark"/></svg>
-          </div>
-          <div class="sq"></div>
+      <div class="media shot">
+        <div class="ph ph-shot">
+          <picture class="wet"><source media="(max-width:760px)" srcset="assets/lux-m.webp"><img src="assets/lux.webp" alt="" width="1200" height="1200" loading="lazy" decoding="async"></picture>
+          <picture class="dry"><source media="(max-width:760px)" srcset="assets/lux-m.webp"><img src="assets/lux.webp" alt="Мастер раскатывает защитную плёнку по капоту и выгоняет раствор" data-i-alt="lux.alt" width="1200" height="1200" loading="lazy" decoding="async"></picture>
+          <div class="sq" aria-hidden="true"></div>
         </div>
-        <p class="media-cap"><span data-i="lux.cap">Зона Люкс пакета</span></p>
       </div>
     </div>
   </section>
@@ -222,17 +204,12 @@
         </div>
         <a class="btn btn-gold" href="https://wa.me/77470550465" data-wa="vkrug" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg><span data-i="vk.cta">Цена на мою машину</span></a>
       </div>
-      <div class="media scheme-wrap" data-zone="full">
-        <div class="ph ph-scheme" aria-hidden="true">
-          <div class="scheme base">
-            <svg viewBox="0 0 1000 400"><use href="#car-body" class="body"/><use href="#car-glass" class="glass"/><use href="#car-lines" class="lines"/></svg>
-          </div>
-          <div class="scheme dry">
-            <svg viewBox="0 0 1000 400"><use href="#car-body" class="body gold"/><use href="#car-glass" class="glass"/><use href="#car-lines" class="lines dark"/></svg>
-          </div>
-          <div class="sq"></div>
+      <div class="media shot">
+        <div class="ph ph-shot">
+          <picture class="wet"><source media="(max-width:760px)" srcset="assets/vkrug-m.webp"><img src="assets/vkrug.webp" alt="" width="1200" height="1200" loading="lazy" decoding="async"></picture>
+          <picture class="dry"><source media="(max-width:760px)" srcset="assets/vkrug-m.webp"><img src="assets/vkrug.webp" alt="Два мастера натягивают лист полиуретановой плёнки над кузовом" data-i-alt="vk.alt" width="1200" height="1200" loading="lazy" decoding="async"></picture>
+          <div class="sq" aria-hidden="true"></div>
         </div>
-        <p class="media-cap"><span data-i="vk.cap">Зона оклейки в круг</span></p>
       </div>
     </div>
   </section>
@@ -242,8 +219,8 @@
 <div class="pw pw-photo" id="podgotovka">
   <section class="plate photo">
     <div class="ph ph-photo">
-      <div class="wet"><img src="assets/prep.webp" alt="" width="900" height="1400" loading="lazy" decoding="async"></div>
-      <div class="dry"><img src="assets/prep.webp" alt="Пена на капоте перед оклейкой: мойка и обезжиривание кузова" data-i-alt="prep.alt" width="900" height="1400" loading="lazy" decoding="async"></div>
+      <picture class="wet"><source media="(max-width:760px)" srcset="assets/prep-m.webp"><img src="assets/prep.webp?v=20261026-3" alt="" width="1920" height="1080" loading="lazy" decoding="async"></picture>
+      <picture class="dry"><source media="(max-width:760px)" srcset="assets/prep-m.webp"><img src="assets/prep.webp?v=20261026-3" alt="Ракель выгоняет раствор из-под плёнки на мокром кузове" data-i-alt="prep.alt" width="1920" height="1080" loading="lazy" decoding="async"></picture>
       <div class="sq" aria-hidden="true"></div>
       <div class="veil" aria-hidden="true"></div>
     </div>
@@ -428,6 +405,6 @@
   <a class="st-ig" href="https://www.instagram.com/asmr_detailing_studio/" target="_blank" rel="noopener" aria-label="Instagram студии" data-i-aria="ig.aria"><svg aria-hidden="true"><use href="#ic-ig"/></svg></a>
 </nav>
 
-<script src="script.js?v=20261026-2" defer></script>
+<script src="script.js?v=20261026-3" defer></script>
 </body>
 </html>

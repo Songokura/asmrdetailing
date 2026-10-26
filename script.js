@@ -224,7 +224,7 @@
     var conn = navigator.connection;
     if (conn && (conn.saveData || /2g/.test(conn.effectiveType || ""))) return;
     heroVideo.addEventListener("playing", function () { if (heroPh) heroPh.classList.add("is-live"); });
-    heroVideo.src = "assets/hero-loop.mp4";
+    heroVideo.src = "assets/hero-loop.mp4?v=20261026-3";
     var p = heroVideo.play();
     if (p && p.catch) p.catch(function () {});
   }
