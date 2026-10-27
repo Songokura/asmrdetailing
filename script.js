@@ -22,7 +22,7 @@
       sticky: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу рассчитать стоимость бронирования. Автомобиль: ",
       kontakty: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу записать автомобиль на оклейку. Автомобиль: ",
       lux: "Здравствуйте! Интересует Люкс пакет (защита передней части). Подскажите стоимость и ближайший день. Автомобиль: ",
-      ultra: "Здравствуйте! Интересует Ultra пакет (передняя часть и четыре двери). Подскажите стоимость и срок. Автомобиль: ",
+      ultra: "Здравствуйте! Интересует Ultra пакет (передняя часть и четыре двери). Подскажите срок и свободные даты. Автомобиль: ",
       vkrug: "Здравствуйте! Интересует оклейка в круг. Подскажите стоимость и ближайший день. Автомобиль: "
     }
   };
@@ -361,3 +361,14 @@
   if (doc.readyState === "complete") start(); else W.addEventListener("load", start);
   update();
 })();
+
+/* Схема зон: наведение на пункт списка подсвечивает номер на фото и наоборот */
+document.querySelectorAll('.pw-svc').forEach(function (pw) {
+  function mark(n, on) {
+    pw.querySelectorAll('[data-n="' + n + '"]').forEach(function (el) { el.classList.toggle('on', on); });
+  }
+  pw.querySelectorAll('.list-z li.n').forEach(function (li) {
+    li.addEventListener('mouseenter', function () { mark(li.dataset.n, true); });
+    li.addEventListener('mouseleave', function () { mark(li.dataset.n, false); });
+  });
+});
