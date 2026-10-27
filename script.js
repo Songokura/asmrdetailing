@@ -362,12 +362,12 @@
   update();
 })();
 
-/* Схема зон: наведение на пункт списка подсвечивает номер на фото и наоборот */
+/* Схема пакета: наведение на пункт расшифровки подсвечивает номер на фото */
 document.querySelectorAll('.pw-svc').forEach(function (pw) {
   function mark(n, on) {
     pw.querySelectorAll('[data-n="' + n + '"]').forEach(function (el) { el.classList.toggle('on', on); });
   }
-  pw.querySelectorAll('.list-z li.n').forEach(function (li) {
+  pw.querySelectorAll('.zc-leg li').forEach(function (li) {
     li.addEventListener('mouseenter', function () { mark(li.dataset.n, true); });
     li.addEventListener('mouseleave', function () { mark(li.dataset.n, false); });
   });
