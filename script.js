@@ -1,4 +1,4 @@
-/* ASMR detailing studio. Ванильный JS: плиты и самозатягивание царапин, меню, якоря, язык, счётчики, форма в WhatsApp. */
+/* ASMR detailing studio. Ванильный JS: плиты и укладка плёнки на кадр, меню, якоря, язык, счётчики, форма в WhatsApp. */
 (function () {
   "use strict";
   var doc = document, root = doc.documentElement, W = window;
@@ -9,7 +9,6 @@
   var easeOut = function (x) { return 1 - Math.pow(1 - x, 3); };
   var smooth = function (x) { x = clamp(x); return x * x * (3 - 2 * x); };
   var LANG = "ru";
-  var MOBILE = W.matchMedia("(max-width:760px)").matches;
   var TOUCH = W.matchMedia("(pointer:coarse)").matches;
   var VW = W.innerWidth, VH = W.innerHeight;
 
@@ -17,17 +16,18 @@
   var PHONE = "77470550465";
   var WA = {
     ru: {
-      "default": "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу забронировать кузов плёнкой. Машина: ",
-      hero: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу рассчитать стоимость оклейки. Машина: ",
-      menu: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу рассчитать стоимость оклейки. Машина: ",
-      sticky: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу рассчитать стоимость оклейки. Машина: ",
-      kontakty: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу записать машину на оклейку. Машина: ",
-      lux: "Здравствуйте! Интересует Люкс пакет (оклейка передней части). Подскажите цену и ближайший день. Машина: ",
-      vkrug: "Здравствуйте! Интересует оклейка в круг. Подскажите цену и ближайший день. Машина: "
+      "default": "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу забронировать кузов плёнкой. Автомобиль: ",
+      hero: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу рассчитать стоимость бронирования. Автомобиль: ",
+      menu: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу рассчитать стоимость бронирования. Автомобиль: ",
+      sticky: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу рассчитать стоимость бронирования. Автомобиль: ",
+      kontakty: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу записать автомобиль на оклейку. Автомобиль: ",
+      lux: "Здравствуйте! Интересует Люкс пакет (защита передней части). Подскажите стоимость и ближайший день. Автомобиль: ",
+      ultra: "Здравствуйте! Интересует Ultra пакет (передняя часть и четыре двери). Подскажите стоимость и срок. Автомобиль: ",
+      vkrug: "Здравствуйте! Интересует оклейка в круг. Подскажите стоимость и ближайший день. Автомобиль: "
     }
   };
   var FORM_LABELS = {
-    ru: { head: "Заявка с сайта ASMR detailing studio", name: "Имя", phone: "Телефон", car: "Машина", pkg: "Пакет", lux: "Люкс пакет", vkrug: "В круг", any: "Пока не выбрал" }
+    ru: { head: "Заявка с сайта ASMR detailing studio", name: "Имя", phone: "Телефон", car: "Автомобиль", pkg: "Пакет", lux: "Люкс пакет", ultra: "Ultra пакет", vkrug: "Оклейка в круг", any: "Пока не выбрал" }
   };
   W.addEventListener("click", function (e) {
     var a = e.target && e.target.closest ? e.target.closest("a[data-wa]") : null;
@@ -107,46 +107,21 @@
     }
   });
 
-  /* ---------- Царапины: сетка коротких штрихов, каждый затягивается к своей середине ---------- */
-  var SVG_NS = "http://www.w3.org/2000/svg";
-  function seeded(seed) { var s = seed % 2147483647; if (s <= 0) s += 2147483646; return function () { s = s * 16807 % 2147483647; return (s - 1) / 2147483646; }; }
-  var scrs = [].slice.call(doc.querySelectorAll(".scr"));
-  scrs.forEach(function (svg, idx) {
-    var rnd = seeded(97 + idx * 131);
-    var n = svg.closest(".ph-hero") ? 54 : 38;
-    var frag = doc.createDocumentFragment();
-    for (var i = 0; i < n; i++) {
-      var x = rnd() * 100, y = rnd() * 100;
-      var len = 3 + rnd() * 11;
-      var ang = (rnd() < 0.55 ? -38 : 32) + (rnd() - 0.5) * 50;
-      var rad = ang * Math.PI / 180;
-      var dx = Math.cos(rad) * len / 2, dy = Math.sin(rad) * len / 2;
-      var l = doc.createElementNS(SVG_NS, "line");
-      l.setAttribute("x1", (x - dx).toFixed(2)); l.setAttribute("y1", (y - dy).toFixed(2));
-      l.setAttribute("x2", (x + dx).toFixed(2)); l.setAttribute("y2", (y + dy).toFixed(2));
-      l.setAttribute("pathLength", "1");
-      /* задержка по диагонали: тёплое пятно идёт из левого верхнего угла */
-      var d = ((x + y) / 200) * 0.5 + rnd() * 0.12;
-      l.style.setProperty("--d", d.toFixed(3));
-      frag.appendChild(l);
-    }
-    svg.appendChild(frag);
-  });
-
-  /* ---------- Плиты: enter / stay / exit, самозатягивание --heal ---------- */
+  /* ---------- Плиты: enter / stay / exit и укладка плёнки --open ---------- */
   var pws = [].slice.call(doc.querySelectorAll(".pw"));
   var sticky = doc.getElementById("sticky"), kont = doc.getElementById("kontakty");
   var hdr = doc.getElementById("hdr");
   var INTRO = (location.hash.length > 1 || W.pageYOffset > 80 || REDUCED) ? 1 : 0;
   var introStart = 0, ticking = false;
-  var st = pws.map(function () { return { heal: -1, out: {} }; });
+  var st = pws.map(function () { return { open: -1, out: {} }; });
   var lastTs = 0;
   function put(el, s, k, v) { if (s.out[k] !== v) { s.out[k] = v; el.style.setProperty(k, v); } }
+  function markDone(phs, done) { for (var p = 0; p < phs.length; p++) phs[p].classList.toggle("done", done); }
   function update(ts) {
     ticking = false;
     var now = typeof ts === "number" ? ts : performance.now();
     var dt = lastTs ? Math.min(64, now - lastTs) : 16.7; lastTs = now;
-    var k = 1 - Math.pow(1 - 0.16, dt / 16.7);
+    var k = 1 - Math.pow(1 - 0.15, dt / 16.7);
     var H = VH;
     var pageY = W.pageYOffset;
     var kontTop = kont ? kont.getBoundingClientRect().top : null;
@@ -167,25 +142,25 @@
       var stay = r.height > H ? clamp(-r.top / (r.height - H)) : 0;
       var exit = (nxtTops[i] !== null && !flow) ? clamp(1 - nxtTops[i] / H) : 0;
       var isHero = pw.classList.contains("pw-hero");
-      var heal;
-      if (isHero) heal = REDUCED ? 1 : smooth(INTRO);
-      else heal = REDUCED ? 1 : (flow ? smooth((enter - 0.22) / 0.5) : smooth((enter - 0.28) / 0.6));
-      if (s.heal < 0 || REDUCED || isHero) s.heal = heal;
+      var open;
+      if (isHero) open = REDUCED ? 1 : smooth(INTRO);
+      else open = REDUCED ? 1 : (flow ? smooth((enter - 0.18) / 0.5) : smooth((enter - 0.3) / 0.58));
+      if (s.open < 0 || REDUCED || isHero) s.open = open;
       else {
-        s.heal += (heal - s.heal) * k;
-        if (Math.abs(heal - s.heal) > 0.002) moving = true; else s.heal = heal;
+        s.open += (open - s.open) * k;
+        if (Math.abs(open - s.open) > 0.002) moving = true; else s.open = open;
       }
       put(pw, s, "--enter", enter.toFixed(4));
       put(pw, s, "--stay", (isHero ? easeOut(stay) : stay).toFixed(4));
       put(pw, s, "--exit", exit.toFixed(4));
-      put(pw, s, "--heal", s.heal.toFixed(4));
+      put(pw, s, "--open", s.open.toFixed(4));
       var plate = pw.firstElementChild;
       if (plate) plate.classList.toggle("gone", exit >= 1 && !flow);
       if (!s.phs) s.phs = pw.querySelectorAll(".ph");
-      var healed = s.heal >= 0.999;
-      if (s.healed !== healed) { s.healed = healed; for (var p = 0; p < s.phs.length; p++) s.phs[p].classList.toggle("healed", healed); }
+      var done = s.open >= 0.999;
+      if (s.done !== done) { s.done = done; markDone(s.phs, done); }
       if (!s.txts) s.txts = pw.querySelectorAll(".txt, .hero-txt");
-      var on = isHero ? INTRO > 0.12 : (flow ? enter > 0.25 : enter > 0.6);
+      var on = isHero ? INTRO > 0.1 : (flow ? enter > 0.22 : enter > 0.58);
       if (s.on !== on) { s.on = on; for (var t = 0; t < s.txts.length; t++) s.txts[t].classList.toggle("on", on); }
     }
     if (sticky) {
@@ -200,29 +175,29 @@
   W.addEventListener("scroll", onScroll, { passive: true });
   W.addEventListener("resize", function () {
     /* на телефоне смена только высоты - это адресная строка: раскладку не пересчитываем */
-    if (W.innerWidth !== VW) { VW = W.innerWidth; VH = W.innerHeight; MOBILE = W.matchMedia("(max-width:760px)").matches; fitAll(); }
+    if (W.innerWidth !== VW) { VW = W.innerWidth; VH = W.innerHeight; fitAll(); }
     else if (!TOUCH) { VH = W.innerHeight; }
     onScroll();
   });
   function runIntro(ts) {
     if (!introStart) introStart = ts;
-    INTRO = clamp((ts - introStart) / 1700);
+    INTRO = clamp((ts - introStart) / 1600);
     update(ts);
     if (INTRO < 1) requestAnimationFrame(runIntro);
   }
 
-  /* ---------- Кадры каталожных секций: затягивание при появлении ---------- */
+  /* ---------- Кадры каталожных секций: плёнка ложится при появлении ---------- */
   var secPh = [].slice.call(doc.querySelectorAll(".sec .ph"));
-  secPh.forEach(function (ph) { ph.style.setProperty("--heal", REDUCED ? "1" : "0"); if (REDUCED) ph.classList.add("healed"); });
-  function healPh(ph) {
+  secPh.forEach(function (ph) { if (REDUCED) { ph.style.setProperty("--open", "1"); ph.classList.add("done"); } else ph.style.setProperty("--open", "0"); });
+  function layPh(ph) {
     if (ph.getAttribute("data-done")) return;
     ph.setAttribute("data-done", "1");
     var t0 = 0;
     function step(ts) {
       if (!t0) t0 = ts;
       var p = smooth((ts - t0) / 1500);
-      ph.style.setProperty("--heal", p.toFixed(4));
-      if (p < 1) requestAnimationFrame(step); else ph.classList.add("healed");
+      ph.style.setProperty("--open", p.toFixed(4));
+      if (p < 1) requestAnimationFrame(step); else ph.classList.add("done");
     }
     requestAnimationFrame(step);
   }
@@ -250,22 +225,11 @@
   var fits = [].slice.call(doc.querySelectorAll(".fit"));
   function fitOne(el) {
     el.style.fontSize = "";
+    if (getComputedStyle(el).whiteSpace !== "nowrap") return;
     var base = parseFloat(getComputedStyle(el).fontSize), size = base, guard = 0;
     while (el.scrollWidth > el.clientWidth + 1 && guard < 12) { size *= 0.95; el.style.fontSize = size.toFixed(1) + "px"; guard++; }
   }
   function fitAll() { fits.forEach(fitOne); }
-
-  /* ---------- Видео героя: только десктоп, после загрузки страницы, без экономии трафика ---------- */
-  var heroVideo = doc.querySelector(".hero-video"), heroPh = doc.querySelector(".ph-hero");
-  function startHeroVideo() {
-    if (!heroVideo || MOBILE || REDUCED) return;
-    var conn = navigator.connection;
-    if (conn && (conn.saveData || /2g/.test(conn.effectiveType || ""))) return;
-    heroVideo.addEventListener("playing", function () { if (heroPh) heroPh.classList.add("is-live"); });
-    heroVideo.src = "assets/hero.mp4" + (ASSET_V ? "?v=" + ASSET_V : "");
-    var p = heroVideo.play();
-    if (p && p.catch) p.catch(function () {});
-  }
 
   /* ---------- Бегущая лента героя: вторая копия для бесшовного цикла ---------- */
   var bandT = doc.getElementById("bandT");
@@ -278,11 +242,13 @@
   var phEls = [].slice.call(doc.querySelectorAll("[data-i-ph]"));
   var ariaEls = [].slice.call(doc.querySelectorAll("[data-i-aria]"));
   var altEls = [].slice.call(doc.querySelectorAll("[data-i-alt]"));
+  var titleEls = [].slice.call(doc.querySelectorAll("[data-i-title]"));
   var metaDesc = doc.querySelector('meta[name="description"]');
   iEls.forEach(function (el) { var k = el.getAttribute("data-i"); if (RU[k] == null) RU[k] = el.innerHTML; });
   phEls.forEach(function (el) { RU[el.getAttribute("data-i-ph")] = el.getAttribute("placeholder"); });
   ariaEls.forEach(function (el) { RU[el.getAttribute("data-i-aria")] = el.getAttribute("aria-label"); });
   altEls.forEach(function (el) { RU[el.getAttribute("data-i-alt")] = el.getAttribute("alt"); });
+  titleEls.forEach(function (el) { RU[el.getAttribute("data-i-title")] = el.getAttribute("title"); });
   RU["meta.title"] = doc.title;
   RU["meta.desc"] = metaDesc ? metaDesc.getAttribute("content") : "";
   function t(key) { var d = I18N[LANG] || RU; return d[key] != null ? d[key] : RU[key]; }
@@ -293,6 +259,7 @@
     phEls.forEach(function (el) { var v = t(el.getAttribute("data-i-ph")); if (v != null) el.setAttribute("placeholder", v); });
     ariaEls.forEach(function (el) { var v = t(el.getAttribute("data-i-aria")); if (v != null) el.setAttribute("aria-label", v); });
     altEls.forEach(function (el) { var v = t(el.getAttribute("data-i-alt")); if (v != null) el.setAttribute("alt", v); });
+    titleEls.forEach(function (el) { var v = t(el.getAttribute("data-i-title")); if (v != null) el.setAttribute("title", v); });
     doc.title = t("meta.title");
     if (metaDesc) metaDesc.setAttribute("content", t("meta.desc"));
     root.setAttribute("lang", lang);
@@ -335,7 +302,8 @@
   var rv = [].slice.call(doc.querySelectorAll(".rv"));
   function showRv(el) {
     el.classList.add("in");
-    [].forEach.call(el.querySelectorAll(".ph"), healPh);
+    [].forEach.call(el.querySelectorAll(".ph"), layPh);
+    if (el.classList.contains("ph")) layPh(el);
     runCounters(el);
   }
   if ("IntersectionObserver" in W && !REDUCED) {
@@ -344,7 +312,7 @@
     }, { rootMargin: "0px 0px -6% 0px", threshold: 0.06 });
     rv.forEach(function (el) { io.observe(el); });
     setTimeout(function () { rv.forEach(function (el) { if (!el.classList.contains("in") && el.getBoundingClientRect().top < W.innerHeight) showRv(el); }); }, 1500);
-  } else { rv.forEach(function (el) { el.classList.add("in"); runCounters(el); }); secPh.forEach(function (ph) { ph.style.setProperty("--heal", "1"); ph.classList.add("healed"); }); }
+  } else { rv.forEach(function (el) { el.classList.add("in"); runCounters(el); }); secPh.forEach(function (ph) { ph.style.setProperty("--open", "1"); ph.classList.add("done"); }); }
 
   /* ---------- Форма -> WhatsApp ---------- */
   var form = doc.getElementById("form"), thanks = doc.getElementById("thanks"), ferr = doc.getElementById("ferr");
@@ -388,7 +356,6 @@
     }
     update();
     if (INTRO < 1) requestAnimationFrame(runIntro);
-    setTimeout(startHeroVideo, 900);
   }
   if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { fitAll(); update(); });
   if (doc.readyState === "complete") start(); else W.addEventListener("load", start);
