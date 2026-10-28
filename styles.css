@@ -503,6 +503,8 @@ html:not(.js) .sheet{display:none}
 .zc-leg li{transition:color .2s}
 .zc-leg b{color:var(--gold-hi);font-weight:600;margin-right:2px}
 .zc-leg li.on{color:var(--gold-hi)}
+.zc-all li{position:relative;padding-left:14px}
+.zc-all li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:1px;background:var(--gold-hi)}
 .zc-foot{margin:12px 2px 0;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:12.5px;line-height:1.4;color:#B8BCC6}
 @media (max-width:760px){.zcard{max-width:none;padding:12px}.zc-leg{grid-template-columns:repeat(2,minmax(0,1fr));font-size:12px}.zc-num{width:20px;height:20px;margin:-10px 0 0 -10px;font-size:10px}.zc-dot{width:6px;height:6px;margin:-3px 0 0 -3px}.zc-chip{font-size:11px;letter-spacing:.1em}}
 @media (prefers-reduced-motion:reduce){.zc-num,.zc-leg li{transition:none}}

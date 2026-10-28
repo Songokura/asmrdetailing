@@ -388,7 +388,7 @@ document.querySelectorAll('.zcard').forEach(function (pw) {
   function mark(n, on) {
     pw.querySelectorAll('[data-n="' + n + '"]').forEach(function (el) { el.classList.toggle('on', on); });
   }
-  pw.querySelectorAll('.zc-leg li').forEach(function (li) {
+  pw.querySelectorAll('.zc-leg li[data-n]').forEach(function (li) {
     li.addEventListener('mouseenter', function () { mark(li.dataset.n, true); });
     li.addEventListener('mouseleave', function () { mark(li.dataset.n, false); });
   });
