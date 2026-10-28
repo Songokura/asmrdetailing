@@ -216,7 +216,7 @@
     var t0 = 0;
     function step(ts) {
       if (!t0) t0 = ts;
-      var p = smooth((ts - t0) / 1500);
+      var p = smooth((ts - t0) / 1100);
       ph.style.setProperty("--open", p.toFixed(4));
       if (p < 1) requestAnimationFrame(step); else ph.classList.add("done");
     }
