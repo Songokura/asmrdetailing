@@ -23,11 +23,12 @@
       kontakty: "Здравствуйте! Пишу с сайта ASMR detailing studio. Хочу записать автомобиль на оклейку. Автомобиль: ",
       lux: "Здравствуйте! Интересует Люкс пакет (защита передней части). Подскажите стоимость и ближайший день. Автомобиль: ",
       ultra: "Здравствуйте! Интересует Ultra пакет (передняя часть и четыре двери). Подскажите срок и свободные даты. Автомобиль: ",
-      vkrug: "Здравствуйте! Интересует оклейка в круг. Подскажите стоимость и ближайший день. Автомобиль: "
+      vkrug: "Здравствуйте! Интересует оклейка в круг. Подскажите стоимость и ближайший день. Автомобиль: ",
+      cvet: "Здравствуйте! Интересует замена цвета с защитой кузова (оклейка в круг). Цвет: {c}. Подскажите стоимость. Автомобиль: "
     }
   };
   var FORM_LABELS = {
-    ru: { head: "Заявка с сайта ASMR detailing studio", name: "Имя", phone: "Телефон", car: "Автомобиль", pkg: "Пакет", lux: "Люкс пакет", ultra: "Ultra пакет", vkrug: "Оклейка в круг", any: "Нужна консультация" }
+    ru: { head: "Заявка с сайта ASMR detailing studio", name: "Имя", phone: "Телефон", car: "Автомобиль", pkg: "Пакет", lux: "Люкс пакет", ultra: "Ultra пакет", vkrug: "Оклейка в круг", cvet: "Замена цвета", any: "Нужна консультация" }
   };
   W.addEventListener("click", function (e) {
     var a = e.target && e.target.closest ? e.target.closest("a[data-wa]") : null;
@@ -35,6 +36,7 @@
     var key = a.getAttribute("data-wa") || "default";
     var dict = WA[LANG] || WA.ru;
     var text = dict[key] || WA.ru[key] || WA.ru["default"];
+    text = text.replace("{c}", a.getAttribute("data-wa-c") || "");
     a.setAttribute("href", "https://wa.me/" + PHONE + "?text=" + encodeURIComponent(text));
   }, true);
 
@@ -256,6 +258,8 @@
   var bandT = doc.getElementById("bandT");
   if (bandT) bandT.innerHTML += bandT.innerHTML;
 
+  var cvSync = null; /* блок «Замена цвета», задаётся ниже */
+
   /* ---------- Язык: RU в разметке, KZ подгружается отдельным файлом по кнопке ---------- */
   var I18N = { ru: {} };
   var RU = I18N.ru;
@@ -291,6 +295,7 @@
     if (bandT && bandT.children.length) { var half = bandT.children.length / 2; while (bandT.children.length > half) bandT.removeChild(bandT.lastElementChild); bandT.innerHTML += bandT.innerHTML; }
     try { localStorage.setItem("asmr-lang", lang); } catch (e) {}
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(fitAll); else fitAll();
+    if (cvSync) cvSync();
   }
   function loadLang(lang, done) {
     if (I18N[lang] || lang !== "kk") return done();
@@ -380,6 +385,63 @@
   }
   if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { fitAll(); update(); });
   if (doc.readyState === "complete") start(); else W.addEventListener("load", start);
+  /* Замена цвета: образец плёнки перекрашивает кадр, кадры меняются растворением */
+  (function () {
+    var stage = doc.querySelector(".cv-stage");
+    if (!stage) return;
+    var imgs = stage.querySelectorAll(".cv-img"), sws = [].slice.call(doc.querySelectorAll(".cv-sw"));
+    var cur = doc.querySelector(".cv-cur"), btn = doc.querySelector('a[data-wa="cvet"]');
+    var ver = (imgs[0].getAttribute("src").match(/\?v=[^&]+/) || [""])[0];
+    var front = 0, key = sws[0].getAttribute("data-c");
+    function src(k) { return "assets/cvet/" + k + ".webp" + ver; }
+    cvSync = function () {
+      var n = t("cv.c." + key);
+      cur.textContent = n;
+      if (btn) btn.setAttribute("data-wa-c", n);
+      imgs[front].alt = t("cv.alt") + ", " + t("cv.lbl").toLowerCase() + ": " + n;
+      imgs[1 - front].alt = "";
+    };
+    function pick(k, focus) {
+      sws.forEach(function (b) {
+        var on = b.getAttribute("data-c") === k;
+        b.setAttribute("aria-checked", on ? "true" : "false");
+        b.tabIndex = on ? 0 : -1;
+        if (on && focus) b.focus();
+      });
+      if (k === key) return;
+      key = k;
+      var back = imgs[1 - front], was = imgs[front];
+      function show() {
+        if (key !== k) return;
+        back.classList.add("is-on"); was.classList.remove("is-on");
+        back.removeAttribute("aria-hidden"); was.setAttribute("aria-hidden", "true");
+        front = 1 - front; cvSync();
+      }
+      if (back.getAttribute("src") === src(k) && back.complete) show();
+      else { back.onload = show; back.src = src(k); }
+      cvSync();
+    }
+    sws.forEach(function (b, i) {
+      b.addEventListener("click", function () { pick(b.getAttribute("data-c")); });
+      b.addEventListener("keydown", function (e) {
+        var d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+        if (!d) return;
+        e.preventDefault();
+        pick(sws[(i + d + sws.length) % sws.length].getAttribute("data-c"), true);
+      });
+    });
+    /* остальные цвета грузим заранее, когда блок близко к экрану */
+    if ("IntersectionObserver" in W) {
+      var io = new IntersectionObserver(function (es) {
+        if (!es[0].isIntersecting) return;
+        io.disconnect();
+        sws.forEach(function (b) { var im = new Image(); im.src = src(b.getAttribute("data-c")); });
+      }, { rootMargin: "600px 0px" });
+      io.observe(stage);
+    }
+    cvSync();
+  })();
+
   update();
 })();
 
