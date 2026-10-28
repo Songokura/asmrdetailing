@@ -85,7 +85,28 @@
     if (el.classList.contains("sec")) return r - HDR();
     return r - HDR() - 14;
   }
+  /* ---------- Пакеты: одна плита, вкладки; якоря #lux #ultra #vkrug открывают свою вкладку ---------- */
+  var PK = { lux: 1, ultra: 1, vkrug: 1 };
+  function selectPk(id, focus) {
+    [].forEach.call(doc.querySelectorAll(".pk-tab"), function (b) {
+      var on = b.getAttribute("data-pk") === id;
+      b.classList.toggle("is-on", on); b.setAttribute("aria-selected", on ? "true" : "false"); b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    [].forEach.call(doc.querySelectorAll(".pk-panel, .pk-media"), function (p) { p.hidden = p.getAttribute("data-pk") !== id; });
+  }
+  [].forEach.call(doc.querySelectorAll(".pk-tab"), function (b, i, all) {
+    b.tabIndex = b.classList.contains("is-on") ? 0 : -1;
+    b.addEventListener("click", function () { selectPk(b.getAttribute("data-pk")); });
+    b.addEventListener("keydown", function (e) {
+      var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      selectPk(all[(i + d + all.length) % all.length].getAttribute("data-pk"), true);
+    });
+  });
   function goTo(id, instant) {
+    if (PK[id]) { selectPk(id); id = "pakety"; }
     var el = doc.getElementById(id);
     if (!el) return false;
     setMenu(false);
@@ -102,7 +123,7 @@
     if (goTo(id)) {
       e.preventDefault();
       try { history.pushState(null, "", "#" + id); } catch (err) {}
-      var t = doc.getElementById(id);
+      var t = PK[id] ? doc.getElementById("t-" + id) : doc.getElementById(id);
       if (t) { if (!t.hasAttribute("tabindex") && !/^(A|BUTTON|INPUT|SELECT|TEXTAREA)$/.test(t.tagName)) t.setAttribute("tabindex", "-1"); try { t.focus({ preventScroll: true }); } catch (err2) {} }
     }
   });
@@ -362,8 +383,8 @@
   update();
 })();
 
-/* Схема пакета: наведение на пункт расшифровки подсвечивает номер на фото */
-document.querySelectorAll('.pw-svc').forEach(function (pw) {
+/* Схема пакета: наведение на пункт расшифровки подсвечивает номер на фото (в пределах своей карточки) */
+document.querySelectorAll('.zcard').forEach(function (pw) {
   function mark(n, on) {
     pw.querySelectorAll('[data-n="' + n + '"]').forEach(function (el) { el.classList.toggle('on', on); });
   }

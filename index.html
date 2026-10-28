@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@800&family=Ysabeau+Office:wght@300;400;500;600&family=Golos+Text:wght@400;500;600&display=swap">
 <link rel="preload" as="image" href="assets/ai/hero-studio.webp?v=20261027-1" media="(min-width:761px)" fetchpriority="high">
 <link rel="preload" as="image" href="assets/hero-m.webp?v=20261027-1" media="(max-width:760px)" fetchpriority="high">
-<link rel="stylesheet" href="styles.css?v=20261028-3">
+<link rel="stylesheet" href="styles.css?v=20261028-4">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -135,7 +135,7 @@
     </div>
     <div class="hero-txt">
       <p class="kicker" data-i="hero.kicker">Караганда · детейлинг · 5&nbsp;лет на&nbsp;рынке</p>
-      <h1 class="h-display fit" data-i="hero.h1"><span class="l">Бронирование авто</span><span class="l">полиуретановой плёнкой</span></h1>
+      <h1 class="h-display fit" data-i="hero.h1"><span class="l">Бронирование авто</span><span class="l">полиуретановой</span><span class="l">плёнкой</span></h1>
       <p class="lead" data-i="hero.lead">Американская премиальная антигравийная плёнка 210&nbsp;микрон с&nbsp;гарантией производителя 10-15&nbsp;лет. Люкс пакет за&nbsp;1&nbsp;день, оклейка в&nbsp;круг за&nbsp;3&nbsp;дня.</p>
       <div class="hero-cta">
         <a class="btn btn-gold" href="https://wa.me/77470550465" data-wa="hero" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg><span data-i="cta.calc">Рассчитать стоимость</span></a>
@@ -163,12 +163,18 @@
   </div>
 </section>
 
-<!-- ЛЮКС ПАКЕТ -->
-<div class="pw pw-svc" id="lux">
-  <section class="plate svc svc-light">
+<!-- ПАКЕТЫ: одна плита, переключатель Люкс / Ultra / В круг -->
+<div class="pw pw-svc" id="pakety">
+  <section class="plate svc svc-dark pk">
     <div class="svc-in">
       <div class="txt">
-        <p class="kicker" data-i="lux.kicker">Люкс пакет</p>
+        <p class="kicker" data-i="pk.kicker">Пакеты бронирования</p>
+        <div class="pk-tabs" role="tablist" aria-label="Пакеты" data-i-aria="pk.aria">
+          <button class="pk-tab is-on" type="button" role="tab" id="t-lux" aria-controls="lux" aria-selected="true" data-pk="lux"><span data-i="lux.kicker">Люкс пакет</span></button>
+          <button class="pk-tab" type="button" role="tab" id="t-ultra" aria-controls="ultra" aria-selected="false" data-pk="ultra"><span data-i="ultra.kicker">Ultra пакет</span></button>
+          <button class="pk-tab" type="button" role="tab" id="t-vkrug" aria-controls="vkrug" aria-selected="false" data-pk="vkrug"><span data-i="vk.kicker">Оклейка в&nbsp;круг</span></button>
+        </div>
+        <div class="pk-panel" id="lux" role="tabpanel" aria-labelledby="t-lux" data-pk="lux">
         <h2 class="h-display fit" data-i="lux.h2">Защита уязвимых зон передней части кузова</h2>
         <p class="price"><span class="price-v" data-i="lux.price">от&nbsp;280&nbsp;000&nbsp;<span class="cur">₸</span></span><span class="price-c"><svg aria-hidden="true"><use href="#ic-clock"/></svg><span data-i="lux.term">срок выполнения&nbsp;- 1&nbsp;день</span></span></p>
         <div class="cols">
@@ -185,10 +191,50 @@
         </div>
         <div class="svc-cta">
           <a class="btn btn-gold" href="https://wa.me/77470550465" data-wa="lux" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg><span data-i="cta.calc">Рассчитать стоимость</span></a>
-          <a class="btn btn-ink" href="#sravnenie"><span data-i="svc.cmp">Сравнить пакеты</span><svg aria-hidden="true"><use href="#ic-arr"/></svg></a>
+          <a class="btn btn-line" href="#sravnenie"><span data-i="svc.cmp">Сравнить пакеты</span><svg aria-hidden="true"><use href="#ic-arr"/></svg></a>
+        </div>
+        </div>
+        <div class="pk-panel" id="ultra" role="tabpanel" aria-labelledby="t-ultra" data-pk="ultra" hidden>
+        <h2 class="h-display fit" data-i="ultra.h2">Защита передней части и&nbsp;четырёх дверей</h2>
+        <p class="price"><span class="price-v" data-i="ultra.price">479&nbsp;990&nbsp;<span class="cur">₸</span></span></p>
+        <div class="cols">
+          <div class="col">
+            <h3 class="h-sub gift"><svg aria-hidden="true"><use href="#ic-gift"/></svg><span data-i="ultra.gift">В&nbsp;подарок&nbsp;- все три</span></h3>
+            <ul class="list list-gift">
+              <li data-i="g.glyanec">Бронь глянцевых элементов</li>
+              <li data-i="g.ton">Тонировка</li>
+              <li data-i="g.salon">Бронь пластика салона</li>
+            </ul>
+          </div>
+        </div>
+        <div class="svc-cta">
+          <a class="btn btn-gold" href="https://wa.me/77470550465" data-wa="ultra" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg><span data-i="cta.calc">Рассчитать стоимость</span></a>
+          <a class="btn btn-line" href="#sravnenie"><span data-i="svc.cmp">Сравнить пакеты</span><svg aria-hidden="true"><use href="#ic-arr"/></svg></a>
+        </div>
+        </div>
+        <div class="pk-panel" id="vkrug" role="tabpanel" aria-labelledby="t-vkrug" data-pk="vkrug" hidden>
+        <h2 class="h-display fit" data-i="vk.h2">Полное бронирование кузова с&nbsp;детализацией</h2>
+        <p class="price"><span class="price-v" data-i="vk.price">от&nbsp;900&nbsp;000&nbsp;<span class="cur">₸</span></span><span class="price-c"><svg aria-hidden="true"><use href="#ic-clock"/></svg><span data-i="vk.term">срок выполнения&nbsp;- 3&nbsp;дня</span></span></p>
+        <div class="cols">
+          <div class="col">
+            <h3 class="h-sub gift"><svg aria-hidden="true"><use href="#ic-gift"/></svg><span data-i="vk.gift">В&nbsp;подарок&nbsp;- все пять</span></h3>
+            <ul class="list list-gift">
+              <li data-i="g.lobovoe">Бронь лобового стекла</li>
+              <li data-i="g.plastik">Бронь пластика</li>
+              <li data-i="g.glyanec">Бронь глянцевых элементов</li>
+              <li data-i="g.ton">Тонировка</li>
+              <li data-i="g.setka">Сетка под&nbsp;решётку радиатора</li>
+            </ul>
+          </div>
+        </div>
+        <div class="svc-cta">
+          <a class="btn btn-gold" href="https://wa.me/77470550465" data-wa="vkrug" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg><span data-i="cta.calc">Рассчитать стоимость</span></a>
+          <a class="btn btn-line" href="#sravnenie"><span data-i="svc.cmp">Сравнить пакеты</span><svg aria-hidden="true"><use href="#ic-arr"/></svg></a>
+        </div>
         </div>
       </div>
       <div class="media">
+        <div class="pk-media" data-pk="lux">
           <figure class="zcard">
             <figcaption class="zc-title" data-i="lux.kicker">Люкс пакет</figcaption>
             <p class="zc-chip" data-i="zc.chip">Плёнка США · гарантия 10-15&nbsp;лет</p>
@@ -209,35 +255,8 @@
               <li data-n="9"><b>9.</b> <span data-i="z.krysha">30&nbsp;см крыши</span></li>
             </ol>
           </figure>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ULTRA ПАКЕТ -->
-<div class="pw pw-svc" id="ultra">
-  <section class="plate svc svc-dark flip">
-    <div class="svc-in">
-      <div class="txt">
-        <p class="kicker" data-i="ultra.kicker">Ultra пакет</p>
-        <h2 class="h-display fit" data-i="ultra.h2">Защита передней части и&nbsp;четырёх дверей</h2>
-        <p class="price"><span class="price-v" data-i="ultra.price">479&nbsp;990&nbsp;<span class="cur">₸</span></span></p>
-        <div class="cols">
-          <div class="col">
-            <h3 class="h-sub gift"><svg aria-hidden="true"><use href="#ic-gift"/></svg><span data-i="ultra.gift">В&nbsp;подарок&nbsp;- все три</span></h3>
-            <ul class="list list-gift">
-              <li data-i="g.glyanec">Бронь глянцевых элементов</li>
-              <li data-i="g.ton">Тонировка</li>
-              <li data-i="g.salon">Бронь пластика салона</li>
-            </ul>
-          </div>
         </div>
-        <div class="svc-cta">
-          <a class="btn btn-gold" href="https://wa.me/77470550465" data-wa="ultra" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg><span data-i="cta.calc">Рассчитать стоимость</span></a>
-          <a class="btn btn-line" href="#sravnenie"><span data-i="svc.cmp">Сравнить пакеты</span><svg aria-hidden="true"><use href="#ic-arr"/></svg></a>
-        </div>
-      </div>
-      <div class="media">
+        <div class="pk-media" data-pk="ultra" hidden>
           <figure class="zcard">
             <figcaption class="zc-title" data-i="ultra.kicker">Ultra пакет</figcaption>
             <p class="zc-chip" data-i="zc.chip">Плёнка США · гарантия 10-15&nbsp;лет</p>
@@ -258,37 +277,8 @@
               <li data-n="9"><b>9.</b> <span data-i="z.fary">Передняя оптика</span></li>
             </ol>
           </figure>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ОКЛЕЙКА В КРУГ -->
-<div class="pw pw-svc" id="vkrug">
-  <section class="plate svc svc-light">
-    <div class="svc-in">
-      <div class="txt">
-        <p class="kicker" data-i="vk.kicker">Оклейка в&nbsp;круг</p>
-        <h2 class="h-display fit" data-i="vk.h2">Полное бронирование кузова с&nbsp;детализацией</h2>
-        <p class="price"><span class="price-v" data-i="vk.price">от&nbsp;900&nbsp;000&nbsp;<span class="cur">₸</span></span><span class="price-c"><svg aria-hidden="true"><use href="#ic-clock"/></svg><span data-i="vk.term">срок выполнения&nbsp;- 3&nbsp;дня</span></span></p>
-        <div class="cols">
-          <div class="col">
-            <h3 class="h-sub gift"><svg aria-hidden="true"><use href="#ic-gift"/></svg><span data-i="vk.gift">В&nbsp;подарок&nbsp;- все пять</span></h3>
-            <ul class="list list-gift">
-              <li data-i="g.lobovoe">Бронь лобового стекла</li>
-              <li data-i="g.plastik">Бронь пластика</li>
-              <li data-i="g.glyanec">Бронь глянцевых элементов</li>
-              <li data-i="g.ton">Тонировка</li>
-              <li data-i="g.setka">Сетка под&nbsp;решётку радиатора</li>
-            </ul>
-          </div>
         </div>
-        <div class="svc-cta">
-          <a class="btn btn-gold" href="https://wa.me/77470550465" data-wa="vkrug" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg><span data-i="cta.calc">Рассчитать стоимость</span></a>
-          <a class="btn btn-ink" href="#sravnenie"><span data-i="svc.cmp">Сравнить пакеты</span><svg aria-hidden="true"><use href="#ic-arr"/></svg></a>
-        </div>
-      </div>
-      <div class="media">
+        <div class="pk-media" data-pk="vkrug" hidden>
           <figure class="zcard">
             <figcaption class="zc-title" data-i="vk.kicker">Оклейка в&nbsp;круг</figcaption>
             <p class="zc-chip" data-i="zc.chip">Плёнка США · гарантия 10-15&nbsp;лет</p>
@@ -308,6 +298,7 @@
             </ol>
             <p class="zc-foot" data-i="z.front">А&nbsp;также капот, передний бампер, оптика и&nbsp;30&nbsp;см крыши. Сама крыша не&nbsp;входит. Лобовое стекло&nbsp;- в&nbsp;подарок</p>
           </figure>
+        </div>
       </div>
     </div>
   </section>
@@ -487,7 +478,6 @@
 <section class="sec sec-paper" id="mastera">
   <div class="wrap">
     <div class="sec-head rv">
-      <p class="kicker" data-i="ms.kicker">Мастера</p>
       <h2 class="h-display" data-i="ms.h2">Только свои мастера, только по&nbsp;трудовому договору</h2>
       <p class="lead" data-i="ms.lead">Вызывных мастеров не&nbsp;привлекаем&nbsp;- ради качества. Над&nbsp;вашим автомобилем работает постоянная команда студии.</p>
     </div>
@@ -510,7 +500,6 @@
 <section class="sec sec-stone" id="podarki">
   <div class="wrap">
     <div class="sec-head rv">
-      <p class="kicker" data-i="gf.kicker">Подарки к&nbsp;пакетам</p>
       <h2 class="h-display" data-i="gf.h2">Что&nbsp;мы&nbsp;дарим при&nbsp;бронировании</h2>
       <p class="lead" data-i="gf.lead">Люкс пакет&nbsp;- один подарок на&nbsp;выбор, Ultra пакет&nbsp;- три, оклейка в&nbsp;круг&nbsp;- все пять.</p>
     </div>
@@ -549,7 +538,6 @@
 <section class="sec sec-paper" id="faq">
   <div class="wrap">
     <div class="sec-head rv">
-      <p class="kicker" data-i="fq.kicker">Вопросы перед оклейкой</p>
       <h2 class="h-display" data-i="fq.h2">Что&nbsp;спрашивают перед бронированием</h2>
     </div>
     <div class="faq rv">
@@ -601,7 +589,7 @@
       </form>
       <div class="kont-info rv">
         <a class="kont-tel" href="tel:+77470550465">+7&nbsp;747&nbsp;055&nbsp;04&nbsp;65</a>
-        <p class="kont-line" data-i="kt.hours">Пн-вс <span class="nowrap">9:00-19:00</span>, отвечаем в&nbsp;течение 1,5&nbsp;минуты</p>
+        <p class="kont-line" data-i="kt.hours"><span>Пн-вс <span class="nowrap">9:00-19:00</span>, отвечаем в&nbsp;течение 1,5&nbsp;минуты</span></p>
         <p class="kont-line"><svg aria-hidden="true"><use href="#ic-pin"/></svg><span data-i="kt.addr">Караганда, ул. Казахстанская 47/1</span></p>
         <p class="kont-line"><svg aria-hidden="true"><use href="#ic-mail"/></svg><a href="mailto:asmr_detailing_studio@mail.ru">asmr_detailing_studio@mail.ru</a></p>
         <div class="kont-btns">
@@ -633,6 +621,6 @@
   <a class="st-ig" href="https://www.instagram.com/asmr_detailing_studio/" target="_blank" rel="noopener" aria-label="Instagram студии" data-i-aria="ig.aria"><svg aria-hidden="true"><use href="#ic-ig"/></svg></a>
 </nav>
 
-<script src="script.js?v=20261028-3" defer></script>
+<script src="script.js?v=20261028-4" defer></script>
 </body>
 </html>
