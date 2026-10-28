@@ -27,7 +27,7 @@
     }
   };
   var FORM_LABELS = {
-    ru: { head: "Заявка с сайта ASMR detailing studio", name: "Имя", phone: "Телефон", car: "Автомобиль", pkg: "Пакет", lux: "Люкс пакет", ultra: "Ultra пакет", vkrug: "Оклейка в круг", any: "Пока не выбрал" }
+    ru: { head: "Заявка с сайта ASMR detailing studio", name: "Имя", phone: "Телефон", car: "Автомобиль", pkg: "Пакет", lux: "Люкс пакет", ultra: "Ultra пакет", vkrug: "Оклейка в круг", any: "Нужна консультация" }
   };
   W.addEventListener("click", function (e) {
     var a = e.target && e.target.closest ? e.target.closest("a[data-wa]") : null;

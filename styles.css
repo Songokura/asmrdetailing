@@ -216,7 +216,7 @@ body.menu-open{overflow:hidden}
 .price-q{font-size:clamp(24px,2.4vw,34px);white-space:normal;line-height:1.1}
 .price-c{display:inline-flex;align-items:center;gap:8px;font:500 15px/1.3 var(--ft);color:var(--muted)}
 .price-c svg{width:16px;height:16px;flex:0 0 auto;color:var(--gold)}
-.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 32px;margin-bottom:28px}
+.cols{display:grid;grid-template-columns:minmax(0,1fr);gap:24px 32px;margin-bottom:28px;max-width:440px} /* одна колонка подарков: заголовок и пункты не переносятся в узком столбце */
 .list li{position:relative;padding:7px 0 7px 26px;font-size:16px;line-height:1.35;color:var(--fg);border-top:1px solid var(--line)}
 .list li:first-child{border-top:0}
 .list li::before{content:"";position:absolute;left:0;top:14px;width:12px;height:12px;border-radius:50%;background:var(--gold-grad);box-shadow:inset 0 0 0 3px var(--bg)}
@@ -314,6 +314,14 @@ body.menu-open{overflow:hidden}
 .cmp-hi dt{color:#9EA3AD}
 .cmp-hi dl{--line:rgba(255,255,255,.14)}
 @media (max-width:980px){.cmp{grid-template-columns:minmax(0,1fr);gap:14px}.cmp .btn{align-self:stretch}}
+@media (min-width:981px){ /* ряды «Зоны / Срок / Подарки / Гарантия» на одной линии во всех трёх карточках */
+  .cmp{grid-template-rows:repeat(11,auto);row-gap:0}
+  .cmp-col{display:grid;grid-row:span 11;grid-template-rows:subgrid;row-gap:0}
+  .cmp dl{display:contents}
+  .cmp-price{margin-top:16px}
+  .cmp dt{margin:18px 0 6px;align-self:end}
+  .cmp .btn{margin-top:26px;align-self:end;justify-self:start}
+}
 
 /* этапы */
 .proc{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(32px,5vw,80px);align-items:start}
