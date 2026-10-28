@@ -120,6 +120,7 @@ body.menu-open{overflow:hidden}
 .plate{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--bg);color:var(--fg);transform:scale(calc(1 - .06 * var(--exit)));transform-origin:50% 40%;border-radius:calc(28px * (1 - var(--enter))) calc(28px * (1 - var(--enter))) 0 0}
 .plate::after{content:"";position:absolute;inset:0;background:#0F1014;opacity:calc(.62 * var(--exit));pointer-events:none;z-index:6}
 .plate.gone{visibility:hidden}
+.hero.plate::after,.svc-light.plate::after{background:#E9E5DC;opacity:calc(.55 * var(--exit))} /* светлые плиты уходят под кремовую вуаль, не в серую */
 .pw-hero{height:175svh;margin-top:calc(-1 * var(--hdr))}
 .pw-hero .plate{border-radius:0}
 
@@ -154,12 +155,12 @@ body.menu-open{overflow:hidden}
 /* ---------- Герой ---------- */
 .hero{background:var(--paper)}
 .ph-hero .ph-in img{transform:scale(calc(1 + .07 * var(--stay)));transform-origin:62% 60%;will-change:transform}
-.ph-hero .scrim{background:linear-gradient(90deg,rgba(250,249,246,.94) 0%,rgba(250,249,246,.86) 28%,rgba(250,249,246,.5) 42%,rgba(250,249,246,0) 58%)}
+.ph-hero .scrim{background:linear-gradient(90deg,rgba(250,249,246,.95) 0%,rgba(250,249,246,.9) 30%,rgba(250,249,246,.55) 44%,rgba(250,249,246,.18) 56%,rgba(250,249,246,0) 66%)}
 .ph-hero .ph-in{background:var(--paper)}
 @media (min-width:1100px){ /* кадр сдвинут вправо: машина уходит из-под колонки текста */
-  .ph-hero .ph-in picture{position:absolute;inset:0 0 0 26%;width:auto;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%);mask-image:linear-gradient(90deg,transparent,#000 22%)}
+  .ph-hero .ph-in picture{position:absolute;inset:0 0 0 26%;width:auto;-webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.35) 14%,#000 38%);mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.35) 14%,#000 38%)}
 }
-.hero-txt{position:absolute;left:var(--edge);right:54%;top:47%;transform:translateY(calc(-50% - 70px * var(--stay)));z-index:3;opacity:calc(1 - .9 * var(--stay))}
+.hero-txt{position:absolute;left:var(--edge);right:54%;top:50%;transform:translateY(calc(-50% - 70px * var(--stay)));z-index:3;opacity:calc(1 - .9 * var(--stay))}
 .hero-txt .kicker{margin-bottom:22px}
 .hero-txt h1{margin-bottom:22px;white-space:nowrap}
 .hero-txt .lead{margin-bottom:36px;font-size:clamp(16px,1.25vw,19px);color:#3A3D44;max-width:30em}
@@ -293,29 +294,26 @@ body.menu-open{overflow:hidden}
 .num > span{font-size:15px;color:var(--muted);line-height:1.4}
 @media (max-width:760px){.nums{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}.num b{font-size:clamp(34px,10vw,44px)}}
 
-/* сравнение */
-.cmp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
-.cmp-col{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 1px 0 rgba(21,23,28,.02);padding:clamp(22px,2.6vw,36px);display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden}
-.cmp-name{font:500 28px/1.1 var(--fd);color:var(--ink)}
-.cmp-name::before{content:"";display:block;width:40px;height:1px;background:var(--gold);margin-bottom:20px}
-.cmp-price{font:400 clamp(26px,2.3vw,34px)/1.1 var(--fd);color:var(--gold-text)}
-.cmp-hi .cmp-price{color:var(--gold-hi)}
-.cmp dl{display:grid;gap:14px;flex:1}
-.cmp dt{font:600 11px/1 var(--ft);letter-spacing:.18em;text-transform:uppercase;color:var(--steel);margin-bottom:4px}
-.cmp dd{font-size:15.5px;line-height:1.4;color:var(--ink)}
-.cmp .btn{margin-top:auto;align-self:flex-start}
-.cmp-hi{background:var(--coal);border-color:var(--coal);color:#fff}
-.cmp-hi .cmp-name,.cmp-hi dd{color:#fff}
-.cmp-hi dt{color:#9EA3AD}
-.cmp-hi dl{--line:rgba(255,255,255,.14)}
-@media (max-width:980px){.cmp{grid-template-columns:minmax(0,1fr);gap:14px}.cmp .btn{align-self:stretch}}
-@media (min-width:981px){ /* ряды «Зоны / Срок / Подарки / Гарантия» на одной линии во всех трёх карточках */
-  .cmp{grid-template-rows:repeat(11,auto);row-gap:0}
-  .cmp-col{display:grid;grid-row:span 11;grid-template-rows:subgrid;row-gap:0}
-  .cmp dl{display:contents}
-  .cmp-price{margin-top:16px}
-  .cmp dt{margin:18px 0 6px;align-self:end}
-  .cmp .btn{margin-top:26px;align-self:end;justify-self:start}
+/* сравнение: компактная таблица */
+.cmpt-wrap{border-top:1px solid var(--gold)}
+.cmpt{width:100%;border-collapse:collapse;table-layout:fixed}
+.cmpt th,.cmpt td{text-align:left;vertical-align:top;padding:22px 24px 22px 0;border-bottom:1px solid var(--line)}
+.cmpt thead td{width:18%}
+.cmpt thead th{padding-top:26px}
+.cmpt-n{display:block;font:500 clamp(22px,1.9vw,28px)/1.15 var(--fd);color:var(--ink)}
+.cmpt-p{display:block;margin-top:8px;font:400 clamp(20px,1.6vw,24px)/1.1 var(--fd);color:var(--gold-text)}
+.cmpt tbody th{font:600 11px/1.4 var(--ft);letter-spacing:.18em;text-transform:uppercase;color:var(--steel);padding-top:26px}
+.cmpt tbody td{font-size:15.5px;line-height:1.5;color:var(--ink)}
+.cmpt .hi{background:rgba(184,145,63,.07);padding-left:22px}
+.cmpt-k{display:none}
+@media (max-width:760px){
+  .cmpt,.cmpt tbody,.cmpt tr,.cmpt th,.cmpt td{display:block;width:auto}
+  .cmpt thead{display:none}
+  .cmpt tr{padding:18px 0;border-bottom:1px solid var(--line)}
+  .cmpt th,.cmpt td{border:0;padding:6px 0}
+  .cmpt tbody th{padding:0 0 8px}
+  .cmpt .hi{padding:8px 10px;margin:4px -10px;border-radius:6px}
+  .cmpt-k{display:block;font:600 14px/1.3 var(--ft);color:var(--gold-text);margin-bottom:2px}
 }
 
 /* этапы */
@@ -404,7 +402,7 @@ body.menu-open{overflow:hidden}
 .conv li{display:grid;grid-template-columns:40px minmax(0,1fr);grid-template-rows:auto auto;column-gap:14px;row-gap:4px;align-items:start}
 .conv svg{grid-row:1/3;width:40px;height:40px;padding:9px;border-radius:50%;color:var(--gold-hi);border:1px solid rgba(226,196,131,.4)}
 .conv b{font:600 16px/1.3 var(--ft);color:#fff}
-.conv span{font-size:14px;color:#B8BCC6;line-height:1.4}
+.conv li > span{font-size:14px;color:#B8BCC6;line-height:1.4}
 @media (max-width:980px){.conv{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:480px){.conv{grid-template-columns:minmax(0,1fr)}}
 
@@ -513,8 +511,8 @@ html:not(.js) .sheet{display:none}
 @media (prefers-reduced-motion:reduce){.zc-num,.zc-leg li{transition:none}}
 
 /* ---------- Пакеты: одна плита с вкладками ---------- */
-.pk-tabs{display:inline-flex;gap:4px;padding:4px;margin:0 0 30px;border:1px solid rgba(226,196,131,.32);border-radius:8px;max-width:100%}
-.pk-tab{border:0;background:transparent;color:#C9CCD4;font:500 14.5px/1 var(--ft);letter-spacing:.02em;padding:12px 18px;border-radius:5px;cursor:pointer;white-space:nowrap;transition:background .3s,color .3s}
+.pk-tabs{display:flex;gap:4px;padding:4px;margin:0 0 30px;border:1px solid rgba(226,196,131,.32);border-radius:8px;width:100%}
+.pk-tab{flex:1 1 0;border:0;background:transparent;color:#C9CCD4;font:500 14.5px/1 var(--ft);letter-spacing:.02em;padding:12px 18px;border-radius:5px;cursor:pointer;white-space:nowrap;transition:background .3s,color .3s}
 .pk-tab:hover{color:#fff}
 .pk-tab.is-on{background:var(--metal);color:#17181C;font-weight:600}
 .pk-panel:not([hidden]),.pk-media:not([hidden]){animation:pkIn .5s cubic-bezier(.2,.7,.2,1)}
@@ -523,7 +521,7 @@ html:not(.js) .sheet{display:none}
 @media (min-width:981px){ /* все панели и карточки в одной ячейке: высота по самой длинной, вкладки не прыгают */
   .pk .txt{display:grid;grid-template-columns:minmax(0,1fr)}
   .pk .pk-panel{grid-row:3;grid-column:1}
-  .pk .media{display:grid;align-items:center}
+  .pk .media{display:grid;align-items:start}
   .pk .pk-media{grid-area:1/1}
   .pk .pk-panel[hidden],.pk .pk-media[hidden]{display:block !important;visibility:hidden;pointer-events:none}
 }
@@ -535,4 +533,10 @@ html:not(.js) .sheet{display:none}
   .pk .pk-tab{flex:1 1 0;padding:12px 6px;font-size:13.5px}
   .pk .media{order:3}
   .pk .pk-panel{order:4}
+}
+@media (max-width:480px){ /* схема зон на телефоне: номера прямо на деталях, без линий */
+  .zc-lines,.zc-dot{display:none}
+  .zc-num{left:var(--dx);top:var(--dy);width:22px;height:22px;margin:-11px 0 0 -11px;font-size:11px;box-shadow:0 0 0 2px rgba(16,17,20,.55),0 4px 12px rgba(0,0,0,.4)}
+  .zc-leg{font-size:13px;gap:8px 12px}
+  .zc-foot{font-size:13px}
 }
