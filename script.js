@@ -24,7 +24,7 @@
       lux: "Здравствуйте! Интересует Люкс пакет (защита передней части). Подскажите стоимость и ближайший день. Автомобиль: ",
       ultra: "Здравствуйте! Интересует Ultra пакет (передняя часть и четыре двери). Подскажите стоимость и ближайший день. Автомобиль: ",
       vkrug: "Здравствуйте! Интересует оклейка в круг. Подскажите стоимость и ближайший день. Автомобиль: ",
-      cvet: "Здравствуйте! Интересует замена цвета с защитой кузова (оклейка в круг). Цвет: {c}. Подскажите стоимость. Автомобиль: "
+      cvet: "Здравствуйте! Интересует замена цвета с защитой кузова (оклейка в круг). Кузов: {m}. Цвет: {c}. Подскажите стоимость. Автомобиль: "
     }
   };
   var FORM_LABELS = {
@@ -36,7 +36,7 @@
     var key = a.getAttribute("data-wa") || "default";
     var dict = WA[LANG] || WA.ru;
     var text = dict[key] || WA.ru[key] || WA.ru["default"];
-    text = text.replace("{c}", a.getAttribute("data-wa-c") || "");
+    text = text.replace("{c}", a.getAttribute("data-wa-c") || "").replace("{m}", a.getAttribute("data-wa-m") || "");
     a.setAttribute("href", "https://wa.me/" + PHONE + "?text=" + encodeURIComponent(text));
   }, true);
 
@@ -385,57 +385,74 @@
   }
   if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { fitAll(); update(); });
   if (doc.readyState === "complete") start(); else W.addEventListener("load", start);
-  /* Замена цвета: образец плёнки перекрашивает кадр, кадры меняются растворением */
+  /* Замена цвета: тип кузова и образец плёнки выбирают кадр, кадры меняются растворением */
   (function () {
     var stage = doc.querySelector(".cv-stage");
     if (!stage) return;
     var imgs = stage.querySelectorAll(".cv-img"), sws = [].slice.call(doc.querySelectorAll(".cv-sw"));
+    var tabs = [].slice.call(doc.querySelectorAll(".cv-tab"));
     var cur = doc.querySelector(".cv-cur"), btn = doc.querySelector('a[data-wa="cvet"]');
     var ver = (imgs[0].getAttribute("src").match(/\?v=[^&]+/) || [""])[0];
-    var front = 0, key = sws[0].getAttribute("data-c");
-    function src(k) { return "assets/cvet/" + k + ".webp" + ver; }
+    var front = 0, key = sws[0].getAttribute("data-c"), model = tabs.length ? tabs[0].getAttribute("data-m") : "sedan";
+    var want = model + "-" + key;
+    function src(f) { return "assets/cvet/" + f + ".webp" + ver; }
     cvSync = function () {
-      var n = t("cv.c." + key);
+      var n = t("cv.c." + key), m = t("cv.m." + model);
       cur.textContent = n;
-      if (btn) btn.setAttribute("data-wa-c", n);
-      imgs[front].alt = t("cv.alt") + ", " + t("cv.lbl").toLowerCase() + ": " + n;
+      if (btn) { btn.setAttribute("data-wa-c", n); btn.setAttribute("data-wa-m", m); }
+      imgs[front].alt = m + ". " + t("cv.alt") + ", " + t("cv.lbl").toLowerCase() + ": " + n;
       imgs[1 - front].alt = "";
     };
-    function pick(k, focus) {
-      sws.forEach(function (b) {
-        var on = b.getAttribute("data-c") === k;
+    function check(list, attr, v, focus) {
+      list.forEach(function (b) {
+        var on = b.getAttribute(attr) === v;
         b.setAttribute("aria-checked", on ? "true" : "false");
         b.tabIndex = on ? 0 : -1;
         if (on && focus) b.focus();
       });
-      if (k === key) return;
-      key = k;
+    }
+    function show() {
+      var f = model + "-" + key;
+      if (f === want) return;
+      want = f;
       var back = imgs[1 - front], was = imgs[front];
-      function show() {
-        if (key !== k) return;
+      function swap() {
+        if (want !== f) return;
         back.classList.add("is-on"); was.classList.remove("is-on");
         back.removeAttribute("aria-hidden"); was.setAttribute("aria-hidden", "true");
         front = 1 - front; cvSync();
       }
-      if (back.getAttribute("src") === src(k) && back.complete) show();
-      else { back.onload = show; back.src = src(k); }
+      if (back.getAttribute("src") === src(f) && back.complete) swap();
+      else { back.onload = swap; back.src = src(f); }
       cvSync();
     }
-    sws.forEach(function (b, i) {
-      b.addEventListener("click", function () { pick(b.getAttribute("data-c")); });
-      b.addEventListener("keydown", function (e) {
-        var d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
-        if (!d) return;
-        e.preventDefault();
-        pick(sws[(i + d + sws.length) % sws.length].getAttribute("data-c"), true);
+    function pick(k, focus) { check(sws, "data-c", k, focus); key = k; show(); }
+    function pickModel(m, focus) { check(tabs, "data-m", m, focus); model = m; show(); preload(); }
+    function keys(list, attr, fn) {
+      list.forEach(function (b, i) {
+        b.addEventListener("click", function () { fn(b.getAttribute(attr)); });
+        b.addEventListener("keydown", function (e) {
+          var d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+          if (!d) return;
+          e.preventDefault();
+          fn(list[(i + d + list.length) % list.length].getAttribute(attr), true);
+        });
       });
-    });
-    /* остальные цвета грузим заранее, когда блок близко к экрану */
+    }
+    keys(sws, "data-c", pick);
+    keys(tabs, "data-m", pickModel);
+    /* цвета выбранного кузова грузим заранее, когда блок близко к экрану */
+    var near = false, done = {};
+    function preload() {
+      if (!near || done[model]) return;
+      done[model] = 1;
+      sws.forEach(function (b) { var im = new Image(); im.src = src(model + "-" + b.getAttribute("data-c")); });
+    }
     if ("IntersectionObserver" in W) {
       var io = new IntersectionObserver(function (es) {
         if (!es[0].isIntersecting) return;
         io.disconnect();
-        sws.forEach(function (b) { var im = new Image(); im.src = src(b.getAttribute("data-c")); });
+        near = true; preload();
       }, { rootMargin: "600px 0px" });
       io.observe(stage);
     }
