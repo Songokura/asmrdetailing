@@ -40,11 +40,15 @@
     a.setAttribute("href", "https://wa.me/" + PHONE + "?text=" + encodeURIComponent(text));
   }, true);
 
-  /* ---------- Конверсии Google Ads: gtag подключается на этапе деплоя, здесь только вызовы ---------- */
+  /* ---------- Конверсии Google Ads ---------- */
+  var CONV = {
+    phone: "AW-18545799405/bs6wCL6H864dEO3hqYtF",   /* Интерактивные номера телефонов: ссылки tel: */
+    contact: "AW-18545799405/AEdxCIv8964dEO3hqYtF", /* Контакт: ссылки wa.me и mailto: */
+    form: "AW-18545799405/_5-RCNKE-K4dEO3hqYtF"     /* Отправка формы */
+  };
   function fireConv(key) {
-    if (typeof W.gtag_report_conversion !== "function" || !W.AW_CONV) return;
-    var sendTo = W.AW_CONV[key];
-    if (sendTo) W.gtag_report_conversion(undefined, sendTo);
+    if (typeof W.gtag !== "function" || !CONV[key]) return;
+    W.gtag("event", "conversion", { send_to: CONV[key], value: 1.0, currency: "USD", transport_type: "beacon" });
   }
   W.addEventListener("click", function (e) {
     var a = e.target && e.target.closest ? e.target.closest('a[href^="tel:"], a[href*="wa.me"], a[href^="mailto:"]') : null;
